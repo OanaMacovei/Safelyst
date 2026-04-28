@@ -1,8 +1,10 @@
-package com.example.safelystapp;
+package com.example.safelystapp.activities;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.safelystapp.R;
 
 public class UserProfileScreen extends AppCompatActivity {
 

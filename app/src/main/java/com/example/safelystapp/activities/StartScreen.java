@@ -1,10 +1,12 @@
-package com.example.safelystapp;
+package com.example.safelystapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.example.safelystapp.R;
 
 public class StartScreen extends AppCompatActivity {
 
