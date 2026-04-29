@@ -35,7 +35,7 @@
                     android:paddingStart="8dp"
                     android:textSize="34sp"
                     android:textStyle="bold"
-                    android:textColor="#111111"
+                    android:textColor="#2E7D32"
                     android:focusableInTouchMode="true"
                     android:outlineProvider="none"
                     android:inputType="textCapSentences"
@@ -47,10 +47,11 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:paddingEnd="8dp"
+                    android:paddingTop="7dp"
                     android:src="@android:drawable/ic_menu_revert"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     app:tint="#2E7D32"
-                    android:visibility="gone"/>
+                    />
 
             </LinearLayout>
 

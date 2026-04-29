@@ -13,7 +13,7 @@
         android:theme="@style/Theme.SafelystApp"
         tools:targetApi="31">
         <activity
-            android:name=".activities.ShoppingListsScreen"
+            android:name=".activities.UserProfileScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
                 android:value="" />
         </activity>
 
-        <activity android:name=".activities.UserProfileScreen"/>
+<!--        <activity android:name=".activities.UserProfileScreen"/>-->
         <activity android:name=".activities.ShoppingListSelectedScreen"/>
     </application>
 

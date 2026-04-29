@@ -1,141 +1,310 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User Profile"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#2E7D32"
-            android:paddingBottom="12dp"
-            android:layout_centerInParent="true" />
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="4dp">
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:paddingBottom="20dp"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:id="@+id/profileTitleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My Profile"
+                    android:textColor="#2E7D32"
+                    android:textStyle="bold"
+                    android:textSize="34sp"/>
+
+                <ImageButton
+                    android:id="@+id/profileCloseButton"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_alignParentEnd="true"
+                    android:paddingTop="7dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="#2E7D32"/>
+
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="15dp">
+                android:paddingBottom="20dp"
+                android:paddingTop="15dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    app:cardCornerRadius="62.5dp"
+                    app:cardElevation="0dp"
+                    android:backgroundTint="@android:color/holo_red_dark">
+
+                    <TextView
+                        android:id="@+id/warningCountTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="25"
+                        android:textColor="#FFFFFF"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+                </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Personal Information"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="10dp"/>
+                    android:layout_marginTop="12dp"
+                    android:text="Warnings Triggered"
+                    android:textColor="#111111"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/edit_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Your name"
-                    android:inputType="textPersonName"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="4dp">
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp">
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="Allergies"
-                    android:layout_marginBottom="10dp"/>
-
-                <CheckBox
-                    android:id="@+id/peanutsCheckBox"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Peanuts"/>
+                    android:orientation="vertical">
 
-                <CheckBox
-                    android:id="@+id/glutenCheckBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Gluten Intolerance"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="20dp">
 
-                <CheckBox
-                    android:id="@+id/glucozeCheckBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Glucoze Intolerance"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Top Risk Aliments"
+                            android:textColor="#2E7D32"
+                            android:textSize="18dp"
+                            android:textStyle="bold"/>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="4dp">
+                    </LinearLayout>
 
-            <LinearLayout
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="20dp"
+                        android:paddingBottom="10dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="1. Cheese Chips (5x)"
+                            android:textColor="#111111"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="2. Nuts (3x)"
+                            android:textColor="#111111"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="3. Lava Cake (3x)"
+                            android:textColor="#111111"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp">
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="Affections"
-                    android:layout_marginBottom="10dp"/>
-
-                <CheckBox
-                    android:id="@+id/diabetesCheckBox"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Diabetes"/>
+                    android:orientation="vertical">
 
-                <CheckBox
-                    android:id="@+id/hypertensionCheckBox"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="20dp">
+                        
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Food Restrictions"
+                            android:textColor="#2E7D32"
+                            android:textSize="18dp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="20dp"
+                        android:paddingBottom="20dp">
+
+                        <CheckBox
+                            android:id="@+id/glutenCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Gluten" />
+
+                        <CheckBox
+                            android:id="@+id/lactoseCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Lactose" />
+
+                        <CheckBox
+                            android:id="@+id/nutsCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Nuts" />
+
+                        <CheckBox
+                            android:id="@+id/soyCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Soy" />
+
+                        <CheckBox
+                            android:id="@+id/eggsCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Eggs" />
+
+                        <CheckBox
+                            android:id="@+id/fishCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Fish" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="hypertension"/>
+                    android:orientation="vertical">
 
-                <CheckBox
-                    android:id="@+id/colesterolCheckBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="High Colesterol"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="20dp">
 
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:textSize="18sp"
-            android:backgroundTint="#2E7D32"/>
-    </LinearLayout>
-</ScrollView>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Medical Conditions"
+                            android:textColor="#2E7D32"
+                            android:textSize="18dp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="20dp"
+                        android:paddingBottom="20dp">
+
+                        <CheckBox
+                            android:id="@+id/diabetesCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Diabetes" />
+
+                        <CheckBox
+                            android:id="@+id/hypertensionCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Hypertension" />
+
+                        <CheckBox
+                            android:id="@+id/cholesterolCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Cholesterol" />
+
+                        <CheckBox
+                            android:id="@+id/celiacCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="Celiac" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:text="Save"
+                android:textSize="18sp"
+                android:backgroundTint="#2E7D32" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
