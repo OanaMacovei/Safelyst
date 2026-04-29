@@ -1,7 +1,7 @@
 package com.example.safelystapp.model;
 
 public class Product {
-    public int id, listId;
+    public int id, listId, lastPosition;
     public String name, expirationDate;
     public boolean isChecked;
 

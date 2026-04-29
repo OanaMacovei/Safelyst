@@ -24,7 +24,6 @@ public class ShoppingListsScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_shopping_page);
-        Log.d("DEBUG_APP", "Numar liste: " + shoppingList.size());
 
         shoppingList.add(new ShoppingList(1, "Shopping", 3));
         shoppingList.add(new ShoppingList(2, "Andrei's Birthday", 10));
@@ -32,9 +31,9 @@ public class ShoppingListsScreen extends AppCompatActivity {
 
         FloatingActionButton addListButton = findViewById(R.id.addNewListButton);
         addListButton.setOnClickListener(e -> {
-            Intent intent = new Intent(this, ShoppingListSelectedScreen.class);
+            Intent intent = new Intent(ShoppingListsScreen.this, ShoppingListSelectedScreen.class);
+            intent.putExtra("LIST_NAME", "");
             startActivity(intent);
-            finish();
         });
 
         recyclerView = findViewById(R.id.recyclerViewItems);
