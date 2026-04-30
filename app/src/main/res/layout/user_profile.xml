@@ -36,7 +36,7 @@
                     android:paddingTop="7dp"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="#2E7D32"/>
+                    app:tint="#2E7D32" />
 
             </RelativeLayout>
 
@@ -78,13 +78,16 @@
 
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                app:strokeColor="#2E7D32"
+                app:strokeWidth="2dp"
+                app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -95,6 +98,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         android:padding="20dp">
 
                         <TextView
@@ -106,6 +110,17 @@
                             android:textSize="18dp"
                             android:textStyle="bold"/>
 
+                        <Button
+                            android:id="@+id/resetWarningsButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reset"
+                            android:textAllCaps="false"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:textColor="#2E7D32"
+                            android:background="?attr/selectableItemBackgroundBorderless" />
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -115,33 +130,40 @@
                         android:paddingHorizontal="20dp"
                         android:paddingBottom="10dp">
 
-                        <TextView
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewItems"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="1. Cheese Chips (5x)"
-                            android:textColor="#111111"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="2. Nuts (3x)"
-                            android:textColor="#111111"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="3. Lava Cake (3x)"
-                            android:textColor="#111111"
-                            android:textSize="18sp" />
+                            android:nestedScrollingEnabled="false" />
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/emptyRiskProductLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginBottom="10dp"
+                            android:src="@drawable/ic_info_no_risk_product"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No risk products to be blamed!"
+                            android:textAlignment="center"
+                            android:textColor="#111111"
+                            android:textSize="18sp"
+                            android:paddingBottom="20dp"/>
+                    </LinearLayout>
+
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -304,7 +326,8 @@
                 android:layout_marginHorizontal="20dp"
                 android:text="Save"
                 android:textSize="18sp"
-                android:backgroundTint="#2E7D32" />
+                android:backgroundTint="#2E7D32"
+                android:layout_marginBottom="15dp"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
