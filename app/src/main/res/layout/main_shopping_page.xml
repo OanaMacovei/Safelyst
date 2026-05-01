@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:paddingTop="20dp"
             android:paddingHorizontal="20dp"
             android:paddingBottom="15dp">
@@ -23,11 +23,31 @@
                 android:id="@+id/listSelectedTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:paddingStart="8dp"
                 android:text="Lists"
                 android:textColor="#2E7D32"
                 android:textSize="34sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/toUserProfileButton"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                app:cardCornerRadius="22dp"
+                android:clickable="true"
+                app:cardBackgroundColor="#2E7D32">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="A"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>

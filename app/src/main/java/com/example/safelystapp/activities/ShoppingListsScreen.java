@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +34,12 @@ public class ShoppingListsScreen extends AppCompatActivity {
         addListButton.setOnClickListener(e -> {
             Intent intent = new Intent(ShoppingListsScreen.this, ShoppingListSelectedScreen.class);
             intent.putExtra("LIST_NAME", "");
+            startActivity(intent);
+        });
+
+        CardView userProfileButton = findViewById(R.id.toUserProfileButton);
+        userProfileButton.setOnClickListener(e -> {
+            Intent intent = new Intent(ShoppingListsScreen.this, UserProfileScreen.class);
             startActivity(intent);
         });
 
