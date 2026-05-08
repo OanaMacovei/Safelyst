@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.safelystapp.R;
+import com.example.safelystapp.db.Tables;
 import com.example.safelystapp.model.Product;
 
 import java.util.Calendar;
@@ -22,10 +23,12 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private List<Product> products;
     private Context context;
+    private Tables db;
 
     public ProductAdapter(List<Product> products, Context context) {
         this.products = products;
         this.context = context;
+        this.db = new Tables(context);
     }
 
 
@@ -58,7 +61,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         holder.checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             product.isChecked = isChecked;
-            if (isChecked == true) {
+            int isCheckedVal;
+            if (isChecked) {
+                isCheckedVal = 1;
+            }
+            else {
+                isCheckedVal = 0;
+            }
+
+            db.updateProductCheckbox(product.id, isCheckedVal);
+            if (isCheckedVal == 1) {
                 holder.nameTextView.getPaint().setStrikeThruText(isChecked);
                 holder.nameTextView.setTextColor(Color.GRAY);
             }
@@ -80,6 +92,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             String date = dayOfMonth + "/" + (month1 + 1) + "/" + year1;
             product.expirationDate = date;
             holder.expirationDateTextView.setText("Expire at: " + date);
+            db.updateExpirationDate(product.id, date);
         }, year, month, day);
 
         dataPickerDialog.show();

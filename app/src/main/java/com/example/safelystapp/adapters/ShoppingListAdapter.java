@@ -39,6 +39,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         holder.itemView.setOnClickListener(e -> {
             Intent intent = new Intent(context, ShoppingListSelectedScreen.class);
             intent.putExtra("LIST_NAME", crtShoppingList.name);
+            intent.putExtra("ID_LIST", crtShoppingList.id);
             context.startActivity(intent);
         });
     }

@@ -62,7 +62,6 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Set expiration date"
             android:padding="5dp"
             android:scaleType="fitCenter"
             android:src="@android:drawable/ic_menu_my_calendar"
