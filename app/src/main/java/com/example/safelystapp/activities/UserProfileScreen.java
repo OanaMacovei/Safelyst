@@ -29,6 +29,7 @@ public class UserProfileScreen extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RiskAdapter adapter;
     private Tables db;
+    private boolean checkboxsChanged = false;
     List<RiskProduct> riskProductList = new ArrayList<>();
     List<CheckBox> allergiesCheckbox = new ArrayList<>();
     List<CheckBox> medicalCheckbox = new ArrayList<>();
@@ -78,23 +79,36 @@ public class UserProfileScreen extends AppCompatActivity {
 
         ImageButton backToShoppingScreenButton = findViewById(R.id.profileCloseButton);
         backToShoppingScreenButton.setOnClickListener(e -> {
-            Intent intent = new Intent(UserProfileScreen.this, ShoppingListsScreen.class);
-            startActivity(intent);
+            if (checkboxsChanged) {
+                Toast.makeText(this, "Please save your changes first!", Toast.LENGTH_SHORT). show();
+            }
+            else {
+                Intent intent = new Intent(UserProfileScreen.this, ShoppingListsScreen.class);
+                startActivity(intent);
+            }
         });
     }
 
     public void init() {
-        allergiesCheckbox.add(findViewById(R.id.glutenCheckbox));
-        allergiesCheckbox.add(findViewById(R.id.lactoseCheckbox));
-        allergiesCheckbox.add(findViewById(R.id.nutsCheckbox));
-        allergiesCheckbox.add(findViewById(R.id.soyCheckbox));
-        allergiesCheckbox.add(findViewById(R.id.eggsCheckbox));
-        allergiesCheckbox.add(findViewById(R.id.fishCheckbox));
+        addCheckboxListener(R.id.glutenCheckbox, allergiesCheckbox);
+        addCheckboxListener(R.id.lactoseCheckbox, allergiesCheckbox);
+        addCheckboxListener(R.id.nutsCheckbox, allergiesCheckbox);
+        addCheckboxListener(R.id.soyCheckbox, allergiesCheckbox);
+        addCheckboxListener(R.id.eggsCheckbox, allergiesCheckbox);
+        addCheckboxListener(R.id.fishCheckbox, allergiesCheckbox);
 
-        medicalCheckbox.add(findViewById(R.id.diabetesCheckbox));
-        medicalCheckbox.add(findViewById(R.id.hypertensionCheckbox));
-        medicalCheckbox.add(findViewById(R.id.cholesterolCheckbox));
-        medicalCheckbox.add(findViewById(R.id.celiacCheckbox));
+        addCheckboxListener(R.id.diabetesCheckbox, medicalCheckbox);
+        addCheckboxListener(R.id.hypertensionCheckbox, medicalCheckbox);
+        addCheckboxListener(R.id.cholesterolCheckbox, medicalCheckbox);
+        addCheckboxListener(R.id.celiacCheckbox, medicalCheckbox);
+    }
+
+    private void  addCheckboxListener(int id, List<CheckBox> checkBoxList) {
+        CheckBox checkBox = findViewById(id);
+        checkBox.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            checkboxsChanged = true; //practic cand exista o schimbare asupra unui checkbox, se notifici prin variabila chechkboxChanged
+        }));
+        checkBoxList.add(checkBox);
     }
 
     private void loadUserFromDB() {
@@ -105,6 +119,7 @@ public class UserProfileScreen extends AppCompatActivity {
 
             checkSavedItems(allergiesCheckbox, savedAllergies);
             checkSavedItems(medicalCheckbox, savedMedicalConditions);
+            checkboxsChanged = false;
             cursor.close();
         }
     }
@@ -136,6 +151,7 @@ public class UserProfileScreen extends AppCompatActivity {
         String medicalConditions = getSelectedItems(medicalCheckbox);
 
         db.updateUserProfile(allergies, medicalConditions);
+        checkboxsChanged = false;
         Toast.makeText(this, "Profile Saved Successfully!", Toast.LENGTH_SHORT).show();
         finish();
     }
