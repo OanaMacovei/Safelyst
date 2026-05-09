@@ -36,6 +36,12 @@ public class Tables extends SQLiteOpenHelper {
                 "MEDICAL_CONDITIONS TEXT," +
                 "WARNINGS_COUNT INTEGER)");
 
+        db.execSQL("CREATE TABLE user_profile (" +
+                "ID_USER INTEGER PRIMARY KEY," +
+                "ALLERGIES TEXT," +
+                "MEDICAL_CONDITIONS TEXT," +
+                "WARNING_COUNT INTEGER)");
+
         db.execSQL("INSERT INTO user_profile (ID_USER, ALLERGIES, MEDICAL_CONDITIONS, WARNINGS_COUNT) VALUES (1, '', '', 0)"); //pt ca randul sa existe
     }
 
@@ -121,6 +127,19 @@ public class Tables extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("EXPIRATION_DATE", date);
         db.update("products", contentValues, "ID_PRODUCT = ?", new String[]{String.valueOf(productID)});
+    }
+
+    public Cursor getUserProfile() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM user_profile WHERE ID_USER = 1", null);
+    }
+
+    public void updateUserProfile(String allergies, String medicalConditions) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ALLERGIES", allergies);
+        contentValues.put("MEDICAL_CONDITIONS", medicalConditions);
+        db.update("user_profile", contentValues, "ID_USER = 1", null);
     }
 }
 

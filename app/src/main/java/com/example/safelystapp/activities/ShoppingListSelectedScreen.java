@@ -84,7 +84,7 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
                 String productName = search.getText().toString().trim();
 
                 if (!productName.isEmpty()) {
-                    long newIDReturned = db.insertProduct(crtListID, productName, "", "");
+                    long newIDReturned = db.insertProduct(crtListID, productName, "--/--/----", "");
                     if (newIDReturned != -1) {
                         loadProductsFromDB(crtListID);
                         search.setText("");
@@ -149,7 +149,7 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
                 String expirationDateVal = cursor.getString(3);
                 Product product = new Product(ID_Product, productName);
                 product.isChecked = (isCheckedVal == 1);
-                product.expirationDate = expirationDateVal;
+                product.expirationDate = "Expire at: " + expirationDateVal;
                 productList.add(product);
             } while(cursor.moveToNext());
         }

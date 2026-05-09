@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,7 +46,7 @@ public class ShoppingListsScreen extends AppCompatActivity {
             startActivity(intent);
         });
 
-        CardView userProfileButton = findViewById(R.id.toUserProfileButton);
+        ImageButton userProfileButton = findViewById(R.id.toUserProfileButton);
         userProfileButton.setOnClickListener(e -> {
             Intent intent = new Intent(ShoppingListsScreen.this, UserProfileScreen.class);
             startActivity(intent);
