@@ -2,7 +2,7 @@ package com.example.safelystapp.model;
 
 public class Product {
     public int id, lastPosition;
-    public String name, expirationDate;
+    public String name, expirationDate, hasWarning;
     public boolean isChecked;
 
     public Product(int id, String name) {
@@ -10,6 +10,7 @@ public class Product {
         this.expirationDate = "";
         this.isChecked = false;
         this.name = name;
+        this.hasWarning = null;
     }
 
     public int getID() {

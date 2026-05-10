@@ -7,6 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.safelystapp.model.Product;
+import com.example.safelystapp.model.RiskProduct;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Tables extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Safelyst.db";
@@ -28,19 +34,14 @@ public class Tables extends SQLiteOpenHelper {
                 "NAME TEXT," +
                 "EXPIRATION_DATE TEXT," +
                 "IS_CHECKED INTEGER," +
-                "INGREDIENTS TEXT)");
+                "INGREDIENTS TEXT," +
+                "HAS_WARNING INTEGER)");
 
         db.execSQL("CREATE TABLE user_profile (" +
                 "ID_USER INTEGER PRIMARY KEY," +
                 "ALLERGIES TEXT," +
                 "MEDICAL_CONDITIONS TEXT," +
-                "WARNINGS_COUNT INTEGER)");
-
-        db.execSQL("CREATE TABLE user_profile (" +
-                "ID_USER INTEGER PRIMARY KEY," +
-                "ALLERGIES TEXT," +
-                "MEDICAL_CONDITIONS TEXT," +
-                "WARNING_COUNT INTEGER)");
+                "WARNINGS_COUNT TEXT)");
 
         db.execSQL("INSERT INTO user_profile (ID_USER, ALLERGIES, MEDICAL_CONDITIONS, WARNINGS_COUNT) VALUES (1, '', '', 0)"); //pt ca randul sa existe
     }
@@ -79,7 +80,7 @@ public class Tables extends SQLiteOpenHelper {
         return result > 0;
     }
 
-    public long insertProduct(int listID, String productName, String expirationDate, String ingredients) {
+    public long insertProduct(int listID, String productName, String expirationDate, String ingredients, String hasWarning) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID_LIST", listID);
@@ -87,6 +88,7 @@ public class Tables extends SQLiteOpenHelper {
         contentValues.put("EXPIRATION_DATE", expirationDate);
         contentValues.put("IS_CHECKED", 0);
         contentValues.put("INGREDIENTS", ingredients);
+        contentValues.put("HAS_WARNING", hasWarning);
 
         return db.insert("products", null, contentValues);
     }
@@ -120,6 +122,26 @@ public class Tables extends SQLiteOpenHelper {
         }
         cursor.close();
         return count;
+    }
+
+    public List<RiskProduct> getRiskProducts() {
+        List<RiskProduct> productList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT NAME, COUNT(*) as total FROM products" +
+                       " WHERE HAS_WARNING IS NOT NULL AND HAS_WARNING != '' "+
+                       " GROUP BY NAME" +
+                       " ORDER BY total DESC", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(0);
+                int count = cursor.getInt(1);
+                RiskProduct product = new RiskProduct(name, count);
+                productList.add(product);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return productList;
     }
 
     public void updateExpirationDate(int productID, String date) {
@@ -162,6 +184,17 @@ public class Tables extends SQLiteOpenHelper {
         }
         cursor.close();
         return result;
+    }
+
+    public void incrementWarningCount() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE user_profile SET WARNINGS_COUNT = WARNINGS_COUNT + 1 WHERE ID_USER = 1");
+    }
+
+    public void resetWarnings() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE user_profile SET WARNINGS_COUNT = 0 WHERE ID_USER = 1");
+        db.execSQL("UPDATE products SET HAS_WARNING = '' ");
     }
 }
 

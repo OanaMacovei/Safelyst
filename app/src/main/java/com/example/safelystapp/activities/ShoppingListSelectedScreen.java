@@ -86,6 +86,8 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
         search.setOnEditorActionListener((e, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 String productName = search.getText().toString().trim();
+                search.setText("");
+                search.clearFocus();
 
                 if (!productName.isEmpty()) {
                     String ingredients = "Wheat flour, palm oil, sugar, hazelnuts, whole milk powder.";
@@ -99,11 +101,9 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
 
                     List<String> warnings = Logic.productEvaluation(ingredients, nutriments, savedAllergies, savedConditions);
                     if (warnings.isEmpty()) {
-                        long newIDReturned = db.insertProduct(crtListID, productName, "--/--/----", "");
+                        long newIDReturned = db.insertProduct(crtListID, productName, "--/--/----", "", null);
                         if (newIDReturned != -1) {
                             loadProductsFromDB(crtListID);
-                            search.setText("");
-                            search.clearFocus();
                         }
                     }
                     else {
@@ -142,7 +142,7 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
         undoButton.setOnClickListener(e -> {
             if (!undoStack.isEmpty()) {
                 Product productToUndoTheUndo = undoStack.pop();
-                long newIDReturned = db.insertProduct(crtListID, productToUndoTheUndo.name, productToUndoTheUndo.expirationDate, "");
+                long newIDReturned = db.insertProduct(crtListID, productToUndoTheUndo.name, productToUndoTheUndo.expirationDate, "", productToUndoTheUndo.hasWarning);
 
                 if (newIDReturned != -1) {
                     productToUndoTheUndo.id = (int) newIDReturned;
@@ -169,6 +169,7 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
                 Product product = new Product(ID_Product, productName);
                 product.isChecked = (isCheckedVal == 1);
                 product.expirationDate = "Expire at: " + expirationDateVal;
+                product.hasWarning = cursor.getString(6);
                 productList.add(product);
             } while(cursor.moveToNext());
         }
@@ -190,10 +191,13 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
             .setTitle("WARNING: " + name)
             .setMessage(sb.toString())
             .setPositiveButton("Add anyway", ((dialog, which) -> {
-                long newIDReturned = db.insertProduct(listID, name + " ⚠️", "--/--/----", "");
+                String warningsToString = String.join(",", warnings);
+                long newIDReturned = db.insertProduct(listID, name + " ⚠️", "--/--/----", "", warningsToString);
                 if (newIDReturned != -1) {
                     loadProductsFromDB(listID);
                 }
+
+                db.incrementWarningCount();
             }))
             .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()))
             .show();

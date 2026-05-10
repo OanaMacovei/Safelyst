@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.safelystapp.R;
 import com.example.safelystapp.adapters.RiskAdapter;
 import com.example.safelystapp.db.Tables;
+import com.example.safelystapp.model.Product;
 import com.example.safelystapp.model.RiskProduct;
 
 import java.util.ArrayList;
@@ -53,16 +54,19 @@ public class UserProfileScreen extends AppCompatActivity {
             saveProfile();
         });
 
-        riskProductList.add(new RiskProduct("Cheese Chips", 5));
-        riskProductList.add(new RiskProduct("Nuts", 3));
-        riskProductList.add(new RiskProduct("Lava Cake", 3));
+        riskProductList = db.getRiskProducts();
 
         recyclerView = findViewById(R.id.recyclerViewItems);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RiskAdapter(riskProductList, this);
         recyclerView.setAdapter(adapter);
 
+        if (riskProductList == null || riskProductList.isEmpty()) {
+            emptyRiskProductLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
         resetButton.setOnClickListener(e -> {
+            db.resetWarnings();
             riskProductList.clear();
             warningCount.setText("0");
 
@@ -116,9 +120,11 @@ public class UserProfileScreen extends AppCompatActivity {
         if (cursor != null && cursor.moveToFirst()) {
             String savedAllergies = cursor.getString(1);
             String savedMedicalConditions = cursor.getString(2);
+            int count = cursor.getInt(3);
 
             checkSavedItems(allergiesCheckbox, savedAllergies);
             checkSavedItems(medicalCheckbox, savedMedicalConditions);
+            warningCount.setText(String.valueOf(count));
             checkboxsChanged = false;
             cursor.close();
         }
