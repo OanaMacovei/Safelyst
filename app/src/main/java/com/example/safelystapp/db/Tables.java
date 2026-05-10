@@ -141,6 +141,28 @@ public class Tables extends SQLiteOpenHelper {
         contentValues.put("MEDICAL_CONDITIONS", medicalConditions);
         db.update("user_profile", contentValues, "ID_USER = 1", null);
     }
+
+    public String getUserAllergies() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT ALLERGIES FROM user_profile WHERE ID_USER = 1", null);
+        String result = "";
+        if (cursor.moveToFirst()) {
+            result = cursor.getString(0);
+        }
+        cursor.close();
+        return result;
+    }
+
+    public String getUserMedicalConditions() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT MEDICAL_CONDITIONS FROM user_profile WHERE ID_USER = 1", null);
+        String result = "";
+        if (cursor.moveToFirst()) {
+            result = cursor.getString(0);
+        }
+        cursor.close();
+        return result;
+    }
 }
 
 

@@ -1,5 +1,6 @@
 package com.example.safelystapp.activities;
 
+import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -14,9 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.safelystapp.R;
 import com.example.safelystapp.adapters.ProductAdapter;
+import com.example.safelystapp.controller.Logic;
 import com.example.safelystapp.db.Tables;
 import com.example.safelystapp.model.Product;
 import com.example.safelystapp.utils.SwipeToDelete;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,11 +88,26 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
                 String productName = search.getText().toString().trim();
 
                 if (!productName.isEmpty()) {
-                    long newIDReturned = db.insertProduct(crtListID, productName, "--/--/----", "");
-                    if (newIDReturned != -1) {
-                        loadProductsFromDB(crtListID);
-                        search.setText("");
-                        search.clearFocus();
+                    String ingredients = "Wheat flour, palm oil, sugar, hazelnuts, whole milk powder.";
+                    JSONObject nutriments = new JSONObject();
+                    try {
+                        nutriments.put("sugars_100g", 40.0);
+                        nutriments.put("salt_100g", 6.2);
+                    } catch (Exception ex) { ex.printStackTrace(); }
+                    String savedAllergies = db.getUserAllergies();
+                    String savedConditions = db.getUserMedicalConditions();
+
+                    List<String> warnings = Logic.productEvaluation(ingredients, nutriments, savedAllergies, savedConditions);
+                    if (warnings.isEmpty()) {
+                        long newIDReturned = db.insertProduct(crtListID, productName, "--/--/----", "");
+                        if (newIDReturned != -1) {
+                            loadProductsFromDB(crtListID);
+                            search.setText("");
+                            search.clearFocus();
+                        }
+                    }
+                    else {
+                        showWarningDialog(productName, warnings, crtListID);
                     }
                 }
                 return true;
@@ -156,5 +175,27 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
 
         cursor.close();
         adapter.notifyDataSetChanged();
+    }
+
+    private void showWarningDialog(String name, List<String> warnings, int listID) {
+        StringBuilder sb = new StringBuilder("Product contains:\n");
+        int i = 1;
+        for (String warning : warnings) {
+            sb.append(i).append(". ").append(warning).append("\n");
+            i++;
+        }
+        sb.append("\nDo you still want to add it?");
+
+        new AlertDialog.Builder(this)
+            .setTitle("WARNING: " + name)
+            .setMessage(sb.toString())
+            .setPositiveButton("Add anyway", ((dialog, which) -> {
+                long newIDReturned = db.insertProduct(listID, name + " ⚠️", "--/--/----", "");
+                if (newIDReturned != -1) {
+                    loadProductsFromDB(listID);
+                }
+            }))
+            .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()))
+            .show();
     }
 }
