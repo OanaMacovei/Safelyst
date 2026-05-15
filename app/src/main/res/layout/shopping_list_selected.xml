@@ -77,7 +77,7 @@
                         app:tint="#8E8E93"/>
 
                     <EditText
-                        android:id="@+id/searchProductEditText"
+                        android:id="@+id/searchEditText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"

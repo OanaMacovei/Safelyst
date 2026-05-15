@@ -1,12 +1,21 @@
 package com.example.safelystapp.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -15,23 +24,42 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.safelystapp.R;
 import com.example.safelystapp.adapters.ProductAdapter;
+import com.example.safelystapp.api.Api;
+import com.example.safelystapp.api.SearchLogic;
+import com.example.safelystapp.api.onSearchListener;
 import com.example.safelystapp.controller.Logic;
 import com.example.safelystapp.db.Tables;
 import com.example.safelystapp.model.Product;
 import com.example.safelystapp.utils.SwipeToDelete;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ShoppingListSelectedScreen extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
     private List<Product> productList = new ArrayList<>();
     private Stack<Product> undoStack = new Stack<>();
+    private ArrayAdapter<String> autoMatchAdapter;
+    private List<JsonObject> crtSuggestions = new ArrayList<>();
     private Tables db;
+    private Api api;
+    private Handler handler = new Handler();
 
 
     @Override
@@ -40,11 +68,27 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
         setContentView(R.layout.shopping_list_selected);
         db = new Tables(this);
 
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    Request request = chain.request().newBuilder()
+                            .header("User-Agent", "Safelyst/1.0")
+                            .build();
+                    return chain.proceed(request);
+                })
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://en.openfoodfacts.org/")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        api = retrofit.create(Api.class);
+
         int crtListID = getIntent().getIntExtra("ID_LIST", -1);
 
         recyclerView = findViewById(R.id.recyclerViewItems);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
 
         adapter = new ProductAdapter(productList, this);
         recyclerView.setAdapter(adapter);
@@ -82,39 +126,33 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
             }
         });
 
-        EditText search = findViewById(R.id.searchProductEditText);
+        ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage("Searching for products...");
+        progress.setCancelable(false);
+        EditText search = findViewById(R.id.searchEditText);
         search.setOnEditorActionListener((e, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
-                String productName = search.getText().toString().trim();
-                search.setText("");
-                search.clearFocus();
-
-                if (!productName.isEmpty()) {
-                    String ingredients = "Wheat flour, palm oil, sugar, hazelnuts, whole milk powder.";
-                    JSONObject nutriments = new JSONObject();
-                    try {
-                        nutriments.put("sugars_100g", 40.0);
-                        nutriments.put("salt_100g", 6.2);
-                    } catch (Exception ex) { ex.printStackTrace(); }
-                    String savedAllergies = db.getUserAllergies();
-                    String savedConditions = db.getUserMedicalConditions();
-
-                    List<String> warnings = Logic.productEvaluation(ingredients, nutriments, savedAllergies, savedConditions);
-                    if (warnings.isEmpty()) {
-                        long newIDReturned = db.insertProduct(crtListID, productName, "--/--/----", "", null);
-                        if (newIDReturned != -1) {
-                            loadProductsFromDB(crtListID);
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String query = search.getText().toString();
+                if (query.length() >= 2) {
+                    progress.show();
+                    SearchLogic.fetchProducts(api, query, new onSearchListener() {
+                        @Override
+                        public void onResults(JsonArray products) {
+                            progress.dismiss();
+                            showSelectionDialog(products, crtListID);
                         }
-                    }
-                    else {
-                        showWarningDialog(productName, warnings, crtListID);
-                    }
+
+                        @Override
+                        public void onError(String error) {
+                            progress.dismiss();
+                            Toast.makeText(ShoppingListSelectedScreen.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 return true;
             }
             return false;
         });
-
 
         ImageButton undoButton = findViewById(R.id.undoButton);
         ItemTouchHelper deleteSwipeCallback = new ItemTouchHelper(new SwipeToDelete(this) {
@@ -201,5 +239,50 @@ public class ShoppingListSelectedScreen extends AppCompatActivity {
             }))
             .setNegativeButton("Cancel", ((dialog, which) -> dialog.dismiss()))
             .show();
+    }
+
+    private void showSelectionDialog(JsonArray products, int listID) {
+        if (products.size() == 0) {
+            new AlertDialog.Builder(this).setTitle("Warning").setMessage("No products found!").show();
+            return;
+        }
+
+        String[] productNames = new String[products.size()];
+        for (int i = 0; i < products.size(); i++) {
+            productNames[i] = SearchLogic.getProductName(products.get(i).getAsJsonObject());
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Select product")
+                .setItems(productNames, ((dialog, which) -> {
+                    JsonObject selectedProduct = products.get(which).getAsJsonObject();
+                    productionSelection(selectedProduct, listID);
+                }))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void productionSelection(JsonObject selectedProduct, int listID) {
+        String name = SearchLogic.getProductName(selectedProduct);
+
+        String ingredients = "";
+        if (selectedProduct.has("ingredients_text")) {
+            ingredients = selectedProduct.get("ingredients_text").getAsString();
+        }
+        JSONObject nutrimentsJSON = SearchLogic.nutrimentsConvertedToJSON(selectedProduct);
+
+        Log.d("DEBUG_LOGIC", "Ingredients: " + ingredients);
+        Log.d("DEBUG_LOGIC", "Nutriments: " + nutrimentsJSON);
+        List<String> warnings = Logic.productEvaluation(ingredients, nutrimentsJSON, db.getUserAllergies(), db.getUserMedicalConditions());
+        if (warnings.isEmpty()) {
+            db.insertProduct(listID, name, "--/--/----", ingredients, null);
+            loadProductsFromDB(listID);
+        }
+        else {
+            showWarningDialog(name, warnings, listID);
+        }
+
+        EditText search = findViewById(R.id.searchEditText);
+        search.setText("");
     }
 }

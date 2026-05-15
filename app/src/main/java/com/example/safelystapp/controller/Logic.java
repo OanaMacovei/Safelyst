@@ -6,20 +6,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class Logic {
     private static final Map<String, List<String>> allergiesMap = new HashMap<>();
 
     static {
-        List<String> glutenKeywords = Arrays.asList("gluten", "wheat", "barley", "rye", "malt", "spelt", "kamut", "farina", "semolina");
+        List<String> glutenKeywords = Arrays.asList("gluten", "wheat", "barley", "rye", "malt", "spelt", "kamut", "farina", "semolina", "blé", "orge", "seigle", "avoine", "malt");
         allergiesMap.put("Gluten", glutenKeywords);
         allergiesMap.put("Celiac", glutenKeywords);
-        allergiesMap.put("Lactose", Arrays.asList("milk", "lactose", "whey", "butter", "cream", "cheese", "yogurt", "curd", "casein"));
-        allergiesMap.put("Nuts", Arrays.asList("nut", "peanut", "almond", "hazelnut", "walnut", "cashew", "pistachio", "pecan", "brazil nut"));
-        allergiesMap.put("Soy", Arrays.asList("soy", "soya", "tofu", "edamame", "lecithin"));
-        allergiesMap.put("Eggs", Arrays.asList("egg", "albumin", "yolk", "ovalbumin"));
-        allergiesMap.put("Fish", Arrays.asList("fish", "salmon", "tuna", "cod", "anchovy", "shrimp", "prawn", "crab", "lobster", "mussel"));
+        allergiesMap.put("Lactose", Arrays.asList("milk", "lactose", "whey", "butter", "cream", "cheese", "yogurt", "curd", "casein", "lait", "beurre", "crème", "fromage", "lactosérum"));
+        allergiesMap.put("Nuts", Arrays.asList("nut", "peanut", "almond", "hazelnut", "walnut", "cashew", "pistachio", "pecan", "brazil nut", "arachide", "cacahuète", "amande", "noisette", "noix", "anacarde", "pistache"));
+        allergiesMap.put("Soy", Arrays.asList("soy", "soya", "tofu", "edamame", "lecithin", "soja", "lécithine de soja"));
+        allergiesMap.put("Eggs", Arrays.asList("egg", "albumin", "yolk", "ovalbumin", "oeuf", "œuf", "albumine", "jaune d'oeuf"));
+        allergiesMap.put("Fish", Arrays.asList("fish", "salmon", "tuna", "cod", "anchovy", "shrimp", "prawn", "crab", "lobster", "mussel", "poisson", "saumon", "thon", "crevettes", "crustacés"));
     }
 
     public static List<String> checkAllergies(String ingredients, String savedAllergies) {
@@ -34,12 +35,12 @@ public class Logic {
 
             if (keywordsMap != null) {
                 for (String keyword : keywordsMap) {
-                    if (ingredients.toLowerCase().contains(keyword)) {
+                    if (ingredients.toLowerCase().contains(keyword.toLowerCase(Locale.ROOT))) {
                         if (allergy.trim().equals("Celiac")) {
                             warningsFound.add("Celiac ALERT! " + keyword);
                         }
                         else {
-                            warningsFound.add(keyword);
+                            warningsFound.add(keyword + "(" + allergy + ")");
                         }
                         break;
                     }
@@ -57,21 +58,21 @@ public class Logic {
 
         if (savedMedicalConditions.contains("Diabetes")) {
             double sugar = nutriments.optDouble("sugars_100g", 0.0);
-            if (sugar > 36.0) {
+            if (sugar > 15.0) {
                 medicalWarnings.add("High Sugar - " + sugar + "g");
             }
         }
 
         if (savedMedicalConditions.contains("Hypertension")) {
             double salt = nutriments.optDouble("salt_100g", 0.0);
-            if (salt > 5.0) {
+            if (salt > 1.5) {
                 medicalWarnings.add("High Salt - " + salt + "g");
             }
         }
 
         if (savedMedicalConditions.contains("Cholesterol")) {
-            double fat = nutriments.optDouble("fat", 0.0);
-            if (fat > 13.0) {
+            double fat = nutriments.optDouble("saturated-fat_100g", 0.0);
+            if (fat > 5.0) {
                 medicalWarnings.add("High Saturated Fat - " + fat + "g");
             }
         }
